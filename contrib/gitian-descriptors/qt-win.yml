@@ -31,8 +31,8 @@ script: |
   #  For now luckily there is a test mode that forces a fixed seed.
   export QT_RCC_TEST=1
   # Integrity Check
-  echo "c603942b866f8a8ffff441c0d3e8c69d29a45e0bd3e48d386e7dc27d03237178  amsterdamcoin-deps-win32-gitian.zip"  | sha256sum -c
-  echo "1cb5e1b498e86917db690bc07ee73c9d6ffc23cf3509607d4f79aba53e87ecff  amsterdamcoin-deps-win64-gitian.zip"  | sha256sum -c
+  echo "aa36d109d0d660353a8f78b0b9c625621032b789076f1ae53ad84b9515db2c54  amsterdamcoin-deps-win32-gitian.zip"  | sha256sum -c
+  echo "f8971573cd2975e60c3c1a8f62c4bb6f8839972edfa9dd5e2e6532565821deb7  amsterdamcoin-deps-win64-gitian.zip"  | sha256sum -c
   echo "7ea2a16ecb8088e67db86b0835b887d5316121aeef9565d5d19be3d539a2c2af  qt-everywhere-opensource-src-5.5.0.tar.xz"  | sha256sum -c
   for BITS in 32 64; do # for architectures
     #
@@ -70,7 +70,7 @@ script: |
     #
     # Compile static libraries, and use statically linked openssl (-openssl-linked):
     OPENSSL_LIBS="-L$DEPSDIR/lib -lssl -lcrypto -lgdi32" ./configure -prefix $INSTALLPREFIX -bindir $INSTALLPREFIX/host/bin -confirm-license -release -opensource -static -xplatform $SPECNAME -device-option CROSS_COMPILE="$HOST-" -no-audio-backend -no-sql-sqlite -no-sql-odbc -no-nis -no-cups -no-iconv -no-dbus -no-gif -no-opengl -no-compile-examples -no-feature-style-windowsce -no-feature-style-windowsmobile -no-qml-debug -openssl-linked -skip qtsvg -skip qtwebkit -skip qtwebkit-examples -skip qtserialport -skip qtdeclarative -skip qtmultimedia -skip qtimageformats -skip qtlocation -skip qtsensors -skip qtquick1 -skip qtquickcontrols -skip qtactiveqt -skip qtconnectivity -skip qtwinextras -skip qtxmlpatterns -skip qtscript -skip qtdoc -skip qtwebchannel -system-libpng -system-zlib
-    make $MAKEOPTS install
+    make -j2 $MAKEOPTS install
     # post-process all generated libraries and plugins to be deterministic
     # extract them to a temporary directory then re-build them deterministically
     for LIB in $(find $INSTALLPREFIX -name *.a); do
