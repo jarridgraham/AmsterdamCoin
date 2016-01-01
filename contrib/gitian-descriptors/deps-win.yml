@@ -38,7 +38,7 @@ script: |
   INDIR=$HOME/build
   TEMPDIR=$HOME/tmp
   # Input Integrity Check
-  echo "3da5b3c572741fe2237bee1c3d36b11beef61172ac847132b045548b98d4df29  secp256k1-master.zip"                       | sha256sum -c
+  echo "1e4079deecf0ff9c1aa02b0fe6386d2f600fbe18dc3a6ee06716eaf78397f721  secp256k1-master.zip"                       | sha256sum -c
   echo "3087c32929c1e9db4947d6a184694e06ec604bca29449b75daec295a5d8f11da  miniupnpc-1.9.tar.gz"                       | sha256sum -c
   echo "060105bda482fdfb109b88c05b69624e9d467d59fa30fd9a97225efcc38d1561  db-6.1.26.NC.tar.gz"                        | sha256sum -c
   echo "36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d  zlib-1.2.8.tar.gz"                          | sha256sum -c
@@ -87,8 +87,8 @@ script: |
     # Workaround to prevent re-configuring by make; make all files have a date in the past
     sed -i 's/WinIoCtl.h/winioctl.h/' ../src/dbinc/win_db.h
     find . -print0 | xargs -r0 touch -t 200001010000
-    make $MAKEOPTS #library_build
-    make install_lib install_include
+    make -j2 $MAKEOPTS #library_build
+    make -j2 install_lib install_include
     cd ../..
     #
     tar xzf $INDIR/miniupnpc-1.9.tar.gz
@@ -98,20 +98,20 @@ script: |
   +++ miniupnpc-1.9/Makefile.mingw        2013-09-29 19:09:29.663318691 -1000
   @@ -67,8 +67,8 @@
    
-   wingenminiupnpcstrings.o:  wingenminiupnpcstrings.c
+   wingenminiupnpcstrings.o:	wingenminiupnpcstrings.c
    
   -miniupnpcstrings.h: miniupnpcstrings.h.in wingenminiupnpcstrings
-  - wingenminiupnpcstrings \$< \$@
+  -	wingenminiupnpcstrings \$< \$@
   +miniupnpcstrings.h: miniupnpcstrings.h.in 
-  + sed -e 's|OS/version|MSWindows/5.1.2600|' -e 's|MINIUPNPC_VERSION_STRING \"version\"|MINIUPNPC_VERSION_STRING \"VERSIONHERE\"|' \$< > \$@
+  +	sed -e 's|OS/version|MSWindows/5.1.2600|' -e 's|MINIUPNPC_VERSION_STRING \"version\"|MINIUPNPC_VERSION_STRING \"VERSIONHERE\"|' \$< > \$@
    
-   minixml.o: minixml.c minixml.h miniupnpcstrings.h
+   minixml.o:	minixml.c minixml.h miniupnpcstrings.h
    
   " | sed "s/VERSIONHERE/$(cat VERSION)/" | patch -p1
     mkdir -p dll
     # Workaround to prevent re-configuring by make; make all files have a date in the past
     find . -print0 | xargs -r0 touch -t 200001010000
-    make -f Makefile.mingw CC=$HOST-gcc AR=$HOST-ar libminiupnpc.a
+    make -j2 -f Makefile.mingw CC=$HOST-gcc AR=$HOST-ar libminiupnpc.a
     install -d $INSTALLPREFIX/include/miniupnpc
     install *.h $INSTALLPREFIX/include/miniupnpc
     install libminiupnpc.a  $INSTALLPREFIX/lib
@@ -121,7 +121,7 @@ script: |
     tar xzf $INDIR/zlib-1.2.8.tar.gz
     cd zlib-1.2.8
     CROSS_PREFIX=$HOST- ./configure --prefix=$INSTALLPREFIX --static
-    make
+    make -j2
     make install
     cd ..
     #
@@ -129,7 +129,7 @@ script: |
     cd libpng-1.6.18
     OPT="-O2"
     CPPFLAGS="${OPT} -I$INSTALLPREFIX/include" CFLAGS="${OPT} -I$INSTALLPREFIX/include" LDFLAGS="${OPT} -L$INSTALLPREFIX/lib" ./configure --disable-shared --prefix=$INSTALLPREFIX --host=$HOST
-    make $MAKEOPTS
+    make -j2 $MAKEOPTS
     make install
     cd ..
     #
@@ -139,14 +139,14 @@ script: |
     cd icu/source
     mkdir -p $TEMPDIR/icu
     ./runConfigureICU MinGW --prefix=$TEMPDIR/icu --enable-static --disable-shared
-    make
+    make -j2
     make install
     cd ../../..
     #rm  -rf icu
     tar xzf $INDIR/icu4c-55_1-src.tgz
     cd icu/source
     ./runConfigureICU MinGW --host=$HOST --with-cross-build=$BUILDDIR/icuCross/icu/source --prefix=$INSTALLPREFIX --enable-static --disable-shared
-    make
+    make -j2
     make install
     cd ../..
     #
@@ -203,7 +203,7 @@ script: |
     # Workaround to prevent re-configuring by make; make all files have a date in the past
     find . -print0 | xargs -r0 touch -t 200001010000
     export FAKETIME=$REFERENCE_DATETIME
-    make install
+    make -j2 install
     cd ..
 
     #
