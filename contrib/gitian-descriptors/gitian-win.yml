@@ -19,7 +19,7 @@ packages:
 - "bsdmainutils"
 reference_datetime: "2013-06-01 00:00:00"
 remotes:
-- "url": "https://github.com/amsterdamcoindev/AmsterdamCoincoin.git"
+- "url": "https://github.com/jarridgraham/AmsterdamCoin.git"
   "dir": "amsterdamcoin"
 files:
 - "qt-win32-5.5.0-gitian.zip"
@@ -75,6 +75,7 @@ script: |
     cd $BUILDDIR
     cp -r ../build/amsterdamcoin .
     cd amsterdamcoin
+    chmod 755 src/leveldb/build_detect_platform
     mkdir -p $OUTDIR/src
     git archive HEAD | tar -x -C $OUTDIR/src
     cp $OUTDIR/src/doc/README_windows.txt $OUTDIR/readme.txt
