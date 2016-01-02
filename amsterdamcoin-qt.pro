@@ -35,7 +35,7 @@ linux {
 DEFINES += BOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT
 
 win32 {
-	BOOST_LIB_SUFFIX=-mgw49-mt-s-1_55
+	BOOST_LIB_SUFFIX=-mt-s
 	BOOST_INCLUDE_PATH=D:/deps/boost_1_55_0
 	BOOST_LIB_PATH=D:/deps/boost_1_55_0/stage/lib
 	BDB_INCLUDE_PATH=D:/deps/db-4.8.30.NC/build_unix
