@@ -31,7 +31,7 @@ LIBS= \
  -l boost_system-mt \
  -l boost_filesystem-mt \
  -l boost_program_options-mt \
- -l boost_thread_win32-mt \
+ -l boost_thread-mt \
  -l boost_chrono-mt \
  -l db_cxx \
  -l ssl \
